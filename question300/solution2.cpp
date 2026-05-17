@@ -1,48 +1,36 @@
 #include <bits/stdc++.h>
 #include <vector>
 using namespace std;
-// this colution's time complexity is O(nlogn)
+// this solution's time complexity is O(nlogn)
 class Solution {
 public:
   int lengthOfLIS(vector<int> &nums) {
     vector<int> d{};
     d.push_back(nums[0]);
-    int len = 1;
 
     for (size_t index = 1; index < nums.size(); index++) {
-      if (nums[index] > d[len - 1]) {
-        d.push_back(nums[index]);
-        len++;
-        continue;
-      }
-
-      size_t left = 0, right = d.size() - 1;
+      size_t left = 0, right = d.size();
       while (right > left) {
-        // in each turn, take the pair d[(left + right) / 2] and d[(left +
-        // right) / 2 + 1], because the two elements are always in the valid
-        // field
         size_t div = (left + right) / 2;
-        if ((d[div + 1] > nums[index]) && (d[div] < nums[index])) {
-          d[div + 1] = nums[index];
-          break;
+
+        if (d[div] < nums[index]) {
+          left = div + 1;
+          continue;
         }
 
         if (d[div] >= nums[index]) {
           right = div;
           continue;
         }
-
-        if (d[div + 1] <= nums[index]) {
-          left = div + 1;
-          continue;
-        }
       }
-      if (right <= left && left == 0) {
-        d[0] = nums[index];
+      if (right == d.size()) {
+        d.push_back(nums[index]);
+        continue;
       }
+      d[left] = nums[index];
     }
 
-    return len;
+    return d.size();
   }
 };
 
